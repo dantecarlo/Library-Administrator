@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { Link } from 'react-router-dom'
 
+import Spinner from '../layout/spinner'
+
 const Subscribers = ({ subscribers }) => {
-  console.log(subscribers)
-  if (!subscribers) return <h1>Loading...</h1>
+  if (!subscribers) return <Spinner />
 
   return (
     <div className="row">
