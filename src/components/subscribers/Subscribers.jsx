@@ -28,7 +28,7 @@ const Subscribers = ({ subscribers, firestore, history }) => {
       </div>
       <div className="col-md-8">
         <h2>
-          <i className="fas fa-users">Subscribers</i>
+          <i className="fas fa-users"> Subscribers</i>
         </h2>
       </div>
 

@@ -8,7 +8,6 @@ import { PropTypes } from 'prop-types'
 import Spinner from '../layout/spinner'
 
 const ShowSubscriber = ({ subscriber }) => {
-  console.log(subscriber)
   if (!subscriber) return <Spinner />
 
   return (
@@ -56,12 +55,12 @@ ShowSubscriber.propTypes = {
 export default compose(
   firestoreConnect(props => [
     {
-      collection: 'susbcribers',
+      collection: 'subscribers',
       storeAs: 'subscriber',
       doc: props.match.params.id
     }
   ]),
   connect(({ firestore: { ordered } }, props) => ({
-    subscriber: ordered.subscribers && ordered.subscribers[0]
+    subscriber: ordered.subscriber && ordered.subscriber[0]
   }))
 )(ShowSubscriber)
