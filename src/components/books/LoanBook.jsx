@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-export class LendBook extends Component {
+export class LoanBook extends Component {
   render() {
     return (
       <div>
@@ -10,4 +10,4 @@ export class LendBook extends Component {
   }
 }
 
-export default LendBook
+export default LoanBook
