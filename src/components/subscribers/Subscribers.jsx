@@ -16,7 +16,7 @@ const Subscribers = ({ subscribers, firestore, history }) => {
         collection: 'subscribers',
         doc: id
       })
-      .then(history.push('/susbcribers'))
+      .then(history.push('/subscribers'))
   }
 
   return (

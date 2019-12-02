@@ -7,8 +7,17 @@ import { PropTypes } from 'prop-types'
 
 import Spinner from '../layout/spinner'
 
-const Books = ({ books }) => {
+const Books = ({ books, firestore, history }) => {
   if (!books) return <Spinner />
+
+  const eraseBook = id => {
+    firestore
+      .delete({
+        collection: 'books',
+        doc: id
+      })
+      .then(history.push('/'))
+  }
 
   return (
     <div className="row">
@@ -52,7 +61,11 @@ const Books = ({ books }) => {
                   <i className="fas fa-angle-double-right"> More Info</i>
                 </Link>
 
-                <button type="button" className="btn btn-danger btn-block">
+                <button
+                  type="button"
+                  className="btn btn-danger btn-block"
+                  onClick={() => eraseBook(book.id)}
+                >
                   <i className="fas fa-trash-alt"> Erase Book</i>
                 </button>
               </td>
@@ -66,7 +79,8 @@ const Books = ({ books }) => {
 
 Books.propTypes = {
   firestore: PropTypes.object.isRequired,
-  books: PropTypes.array
+  books: PropTypes.array,
+  history: PropTypes.object
 }
 
 export default compose(
