@@ -13,6 +13,7 @@ import ShowBook from './components/books/ShowBook'
 import NewBook from './components/books/NewBook'
 import EditBook from './components/books/EditBook'
 import LoanBook from './components/books/LoanBook'
+import Login from './components/auth/Login'
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Navbar />
         <div className="container">
           <Switch>
+            <Route exact path="/login" component={Login} />
+
             <Route exact path="/" component={Books} />
             <Route exact path="/books/show/:id" component={ShowBook} />
             <Route exact path="/books/new" component={NewBook} />
