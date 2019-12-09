@@ -8,6 +8,24 @@ import { PropTypes } from 'prop-types'
 import Spinner from '../layout/spinner'
 
 export class ShowBook extends Component {
+  returnBook = id => {
+    const { firestore } = this.props
+
+    const updatedBookState = { ...this.props.book }
+
+    const loans = updatedBookState.loans.filter(loan => loan.code !== id)
+
+    updatedBookState.loans = loans
+
+    firestore.update(
+      {
+        collection: 'books',
+        doc: updatedBookState.id
+      },
+      updatedBookState
+    )
+  }
+
   render() {
     const { book } = this.props
 
@@ -66,6 +84,42 @@ export class ShowBook extends Component {
             </p>
 
             {btnLoan}
+
+            <h3 className="my-2">Loans to:</h3>
+            {book.loans.map(loan => (
+              <div key={loan.code} className="card my-2">
+                <h4 className="card-header">
+                  {loan.name} {loan.lastName}
+                </h4>
+
+                <div className="card-body">
+                  <p>
+                    <span className="font-weight-bold">Code: </span>
+                    {loan.code}
+                  </p>
+
+                  <p>
+                    <span className="font-weight-bold">Career: </span>
+                    {loan.career}
+                  </p>
+
+                  <p>
+                    <span className="font-weight-bold">Requested Date: </span>
+                    {loan.requestDate}
+                  </p>
+                </div>
+
+                <div className="card-footer">
+                  <button
+                    type="button"
+                    className="btn btn-success font-weight-bold"
+                    onClick={() => this.returnBook(loan.code)}
+                  >
+                    Give back
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
