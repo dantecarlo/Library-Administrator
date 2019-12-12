@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { firebaseConnect } from 'react-redux-firebase'
 
+import { PropTypes } from 'prop-types'
+
 export class Login extends Component {
   state = {
     email: '',
@@ -76,6 +78,10 @@ export class Login extends Component {
       </div>
     )
   }
+}
+
+Login.propTypes = {
+  firebase: PropTypes.object.isRequired
 }
 
 export default firebaseConnect()(Login)

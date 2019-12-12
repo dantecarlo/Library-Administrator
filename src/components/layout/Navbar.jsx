@@ -10,17 +10,27 @@ export class Navbar extends Component {
     isAuthenticated: false
   }
 
-  static getDerivedStateFromProps(state, props) {
+  static getDerivedStateFromProps(props, state) {
     const { auth } = props
     console.log(auth)
     if (auth.uid) {
+      console.log(state.isAuthenticated)
       return { isAuthenticated: true }
     } else {
+      console.log(state.isAuthenticated)
       return { isAuthenticated: false }
     }
   }
 
+  logout = () => {
+    const { firebase } = this.props
+    firebase.logout()
+  }
+
   render() {
+    const { isAuthenticated } = this.state
+    const { auth } = this.props
+
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary mb-5">
         <nav className="navbar navbar-light">
@@ -41,22 +51,49 @@ export class Navbar extends Component {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarColor01">
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={'/subscribers'} className="nav-link">
-                Subscribers
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={'/'} className="nav-link">
-                Books
-              </Link>
-            </li>
-          </ul>
+          {isAuthenticated && (
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <Link to={'/subscribers'} className="nav-link">
+                  Subscribers
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={'/'} className="nav-link">
+                  Books
+                </Link>
+              </li>
+            </ul>
+          )}
+
+          {isAuthenticated && (
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <a href="#!" className="nav-link">
+                  {auth.email}
+                </a>
+              </li>
+
+              <li className="nav-item">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={this.logout}
+                >
+                  Log Out
+                </button>
+              </li>
+            </ul>
+          )}
         </div>
       </nav>
     )
   }
+}
+
+Navbar.propTypes = {
+  firebase: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
 export default compose(
