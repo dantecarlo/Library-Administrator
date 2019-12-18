@@ -9,11 +9,12 @@ import Spinner from '../layout/spinner'
 import Subscribers from '../subscribers/Subscribers'
 import TabSubscriber from '../subscribers/TabSubscriber'
 
+// Redux Actions
+import { searchSubscriber } from '../../actions/searchSubscriberActions'
 export class LoanBook extends Component {
   state = {
     noResults: false,
-    search: '',
-    results: {}
+    search: ''
   }
 
   readData = e => {
@@ -23,15 +24,17 @@ export class LoanBook extends Component {
   }
 
   requestBook = () => {
-    const subscriber = this.state.results
-
+    const { user: subscriber } = this.props
+    console.log(subscriber)
     subscriber.requestDate = new Date().toLocaleDateString()
 
-    const updatedBookState = this.props.book
+    const loanBooks = [...this.props.book.loans, subscriber]
 
-    updatedBookState.loans.push(subscriber)
+    const book = { ...this.props.book }
+    book.loans = loanBooks
+    console.log(book)
 
-    const { firestore, history, book } = this.props
+    const { firestore, history } = this.props
 
     firestore
       .update(
@@ -39,7 +42,7 @@ export class LoanBook extends Component {
           collection: 'books',
           doc: book.id
         },
-        updatedBookState
+        book
       )
       .then(history.push('/'))
   }
@@ -49,21 +52,23 @@ export class LoanBook extends Component {
 
     const { search } = this.state
 
-    const { firestore } = this.props
+    const { firestore, searchSubscriber } = this.props
 
     const subsCollection = firestore.collection('subscribers')
     const query = subsCollection.where('code', '==', search).get()
 
     query.then(result => {
       if (result.empty) {
+        searchSubscriber({})
+
         this.setState({
-          noResults: true,
-          results: {}
+          noResults: true
         })
       } else {
         const data = result.docs[0]
+        searchSubscriber(data.data())
+
         this.setState({
-          results: data.data(),
           noResults: false
         })
       }
@@ -75,13 +80,11 @@ export class LoanBook extends Component {
 
     if (!book) return <Spinner />
 
-    const { noResults, results } = this.state
+    const { user } = this.props
 
-    const tabSubscriber = results.name ? (
-      <TabSubscriber subscriber={results} />
-    ) : null
+    const tabSubscriber = user.name ? <TabSubscriber subscriber={user} /> : null
 
-    const btnRequest = results.name ? (
+    const btnRequest = user.name ? (
       <button
         type="button"
         className="btn btn-primary btn-block"
@@ -89,6 +92,13 @@ export class LoanBook extends Component {
       >
         Request book
       </button>
+    ) : null
+
+    const { noResults } = this.state
+    const noResultsMsg = noResults ? (
+      <div className="alert alert-danger text-center font-weight-bold">
+        No Results
+      </div>
     ) : null
 
     return (
@@ -127,6 +137,8 @@ export class LoanBook extends Component {
 
               {tabSubscriber}
               {btnRequest}
+
+              {noResultsMsg}
             </div>
           </div>
         </div>
@@ -147,7 +159,11 @@ export default compose(
       doc: props.match.params.id
     }
   ]),
-  connect(({ firestore: { ordered } }, props) => ({
-    book: ordered.book && ordered.book[0]
-  }))
+  connect(
+    ({ firestore: { ordered }, user }, props) => ({
+      book: ordered.book && ordered.book[0],
+      user: user
+    }),
+    { searchSubscriber }
+  )
 )(LoanBook)

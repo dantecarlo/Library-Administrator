@@ -12,12 +12,9 @@ export class Navbar extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { auth } = props
-    console.log(auth)
     if (auth.uid) {
-      console.log(state.isAuthenticated)
       return { isAuthenticated: true }
     } else {
-      console.log(state.isAuthenticated)
       return { isAuthenticated: false }
     }
   }

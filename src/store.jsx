@@ -5,6 +5,9 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 
+// custom Reducers
+import searchSubscriberReducer from './reducers/searchSubscriberReducer'
+
 /* eslint-disable no-undef */
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,
@@ -36,7 +39,8 @@ const createStoreWithFirebase = compose(
 // Reducers
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
-  firestore: firestoreReducer
+  firestore: firestoreReducer,
+  user: searchSubscriberReducer
 })
 
 const initialState = {}
